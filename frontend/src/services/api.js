@@ -131,3 +131,79 @@ export const generateTripItinerary = async (tripId) => {
 
   return data;
 };
+
+export const createExpense = async (expenseData) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API}/expenses`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(expenseData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+
+export const getTripExpenses = async (tripId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API}/expenses/trip/${tripId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+
+export const getExpenseSummary = async (tripId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API}/expenses/summary/${tripId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+
+export const deleteExpense = async (expenseId) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API}/expenses/${expenseId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+
+  return data;
+};

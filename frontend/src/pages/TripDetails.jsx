@@ -3,6 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getTripById,
   generateTripItinerary,
+  getTripExpenses,
+  getExpenseSummary,
+  createExpense,
+  deleteExpense,
 } from "../services/api";
 import { getDestinationImage } from "../services/imageService";
 import "../styles/TripDetails.css";
@@ -17,6 +21,15 @@ function TripDetails() {
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
   const [showFullItinerary, setShowFullItinerary] = useState(false);
+  const [expenses, setExpenses] = useState([]);
+const [expenseSummary, setExpenseSummary] = useState(null);
+const [loadingExpenses, setLoadingExpenses] = useState(true);
+const [showExpenseForm, setShowExpenseForm] = useState(false);
+const [expenseTitle, setExpenseTitle] = useState("");
+const [expenseAmount, setExpenseAmount] = useState("");
+const [expensePaidBy, setExpensePaidBy] = useState("");
+const [expenseSplitBetween, setExpenseSplitBetween] = useState([]);
+const [savingExpense, setSavingExpense] = useState(false);
 
   useEffect(() => {
     const loadTrip = async () => {
@@ -53,6 +66,106 @@ function TripDetails() {
     alert(err.message);
   } finally {
     setGenerating(false);
+  }
+};
+
+const loadExpenses = async () => {
+  try {
+    setLoadingExpenses(true);
+
+    const [expenseData, summaryData] = await Promise.all([
+      getTripExpenses(id),
+      getExpenseSummary(id),
+    ]);
+
+    setExpenses(expenseData);
+    setExpenseSummary(summaryData);
+  } catch (err) {
+    console.error("Failed to load expenses:", err);
+  } finally {
+    setLoadingExpenses(false);
+  }
+};
+
+  useEffect(() => {
+    loadExpenses();
+  }, [id]);
+
+const handleDeleteExpense = async (expenseId) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this expense?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await deleteExpense(expenseId);
+
+    await loadExpenses();
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+const handleSplitChange = (name) => {
+  setExpenseSplitBetween((current) => {
+    if (current.includes(name)) {
+      return current.filter((person) => person !== name);
+    }
+
+    return [...current, name];
+  });
+};
+
+const handleAddExpense = async (event) => {
+  event.preventDefault();
+
+  if (!expenseTitle.trim()) {
+    alert("Please enter an expense name.");
+    return;
+  }
+
+  if (!expenseAmount || Number(expenseAmount) <= 0) {
+    alert("Please enter a valid amount.");
+    return;
+  }
+
+  if (!expensePaidBy) {
+    alert("Please select who paid.");
+    return;
+  }
+
+  if (expenseSplitBetween.length === 0) {
+    alert("Select at least one person to split the expense.");
+    return;
+  }
+
+  try {
+    setSavingExpense(true);
+
+    await createExpense({
+      title: expenseTitle.trim(),
+      amount: Number(expenseAmount),
+      paidBy: expensePaidBy,
+      splitBetween: expenseSplitBetween.map((name) => ({
+        name,
+      })),
+      tripId: id,
+    });
+
+    setExpenseTitle("");
+    setExpenseAmount("");
+    setExpensePaidBy("");
+    setExpenseSplitBetween([]);
+    setShowExpenseForm(false);
+
+    await loadExpenses();
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setSavingExpense(false);
   }
 };
 
@@ -291,6 +404,330 @@ function TripDetails() {
   )}
 
 </section>
+
+        <section className="expenses-section">
+
+          <div className="expenses-heading">
+            <div>
+              <span className="section-label">TRIP EXPENSES</span>
+
+              <h2>Keep the money part simple.</h2>
+
+              <p>
+                Track shared expenses and see who owes whom.
+              </p>
+            </div>
+
+            <button
+              className="add-expense-button"
+              onClick={() => setShowExpenseForm(true)}
+            >
+              + Add expense
+            </button>
+                   </div>
+
+          {showExpenseForm && (
+            <form
+              className="expense-form"
+              onSubmit={handleAddExpense}
+            >
+              <div className="expense-form-header">
+
+                <div>
+                  <span className="section-label">
+                    NEW EXPENSE
+                  </span>
+
+                  <h3>Add something you shared.</h3>
+                </div>
+
+                <button
+                  type="button"
+                  className="expense-form-close"
+                  onClick={() => setShowExpenseForm(false)}
+                >
+                  ×
+                </button>
+
+              </div>
+
+              <div className="expense-form-grid">
+
+                <div className="expense-field">
+                  <label>WHAT WAS IT?</label>
+
+                  <input
+                    type="text"
+                    placeholder="Dinner, hotel, cab..."
+                    value={expenseTitle}
+                    onChange={(event) =>
+                      setExpenseTitle(event.target.value)
+                    }
+                  />
+                </div>
+
+                <div className="expense-field">
+                  <label>AMOUNT</label>
+
+                  <div className="amount-input">
+                    <span>₹</span>
+
+                    <input
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      placeholder="0"
+                      value={expenseAmount}
+                      onChange={(event) =>
+                        setExpenseAmount(event.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="expense-field">
+                <label>WHO PAID?</label>
+
+                <select
+                  value={expensePaidBy}
+                  onChange={(event) =>
+                    setExpensePaidBy(event.target.value)
+                  }
+                >
+                  <option value="">Select person</option>
+
+                  {trip.members.map((member, index) => (
+                    <option
+                      key={index}
+                      value={member.name}
+                    >
+                      {member.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="expense-field">
+                <label>SPLIT BETWEEN</label>
+
+                <div className="split-members">
+
+                  {trip.members.map((member, index) => {
+                    const selected =
+                      expenseSplitBetween.includes(member.name);
+
+                    return (
+                      <button
+                        type="button"
+                        key={index}
+                        className={`split-member ${
+                          selected ? "selected" : ""
+                        }`}
+                        onClick={() =>
+                          handleSplitChange(member.name)
+                        }
+                      >
+                        <span>
+                          {selected ? "✓" : ""}
+                        </span>
+
+                        {member.name}
+                      </button>
+                    );
+                  })}
+
+                </div>
+              </div>
+
+              <div className="expense-form-actions">
+
+                <button
+                  type="button"
+                  className="expense-cancel-button"
+                  onClick={() => setShowExpenseForm(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="expense-save-button"
+                  disabled={savingExpense}
+                >
+                  {savingExpense
+                    ? "Adding..."
+                    : "Add expense"}
+                </button>
+
+              </div>
+
+            </form>
+          )}
+
+          {loadingExpenses ? (
+            <div className="expenses-loading">
+              Loading expenses...
+            </div>
+          ) : (
+            <>
+              <div className="expense-summary-grid">
+
+                <div className="expense-summary-card">
+                  <span>TOTAL SPENT</span>
+
+                  <strong>
+                    ₹
+                    {expenses
+                      .reduce(
+                        (total, expense) =>
+                          total + expense.amount,
+                        0
+                      )
+                      .toLocaleString("en-IN")}
+                  </strong>
+                </div>
+
+                <div className="expense-summary-card">
+                  <span>EXPENSES</span>
+
+                  <strong>{expenses.length}</strong>
+                </div>
+
+              </div>
+
+              {expenses.length === 0 ? (
+                <div className="expenses-empty">
+                  <span className="empty-number">02</span>
+
+                  <div>
+                    <h3>No expenses yet.</h3>
+
+                    <p>
+                      Add your first shared expense and PACKT
+                      will keep track of the split.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="expense-list">
+
+                  {expenses.map((expense) => (
+                    <div
+                      className="expense-item"
+                      key={expense._id}
+                    >
+
+                      <div className="expense-main">
+  <h3>{expense.title}</h3>
+
+  <p>
+    Paid by {expense.paidBy}
+  </p>
+
+  <div className="expense-split">
+    Split between{" "}
+    {expense.splitBetween
+      .map((person) => person.name)
+      .join(" · ")}
+  </div>
+</div>
+
+                      <div className="expense-amount">
+                        ₹
+                        {expense.amount.toLocaleString("en-IN")}
+                      </div>
+
+                      <button
+                        className="delete-expense-button"
+                        onClick={() =>
+                          handleDeleteExpense(expense._id)
+                        }
+                      >
+                        Delete
+                      </button>
+
+                    </div>
+                  ))}
+
+                </div>
+              )}
+
+{expenseSummary?.settlements?.length > 0 && (
+  <div className="settlements-section">
+
+    <div className="settlements-header">
+      <div>
+        <span className="section-label">
+          FINAL SETTLEMENT
+        </span>
+
+        <h3>Who needs to pay whom.</h3>
+
+        <p>
+          These amounts are calculated after combining all
+          shared expenses in this trip.
+        </p>
+      </div>
+    </div>
+
+    <div className="settlement-list">
+
+      {expenseSummary.settlements.map(
+        (settlement, index) => (
+          <div
+            className="settlement-item"
+            key={index}
+          >
+
+            <div className="settlement-person">
+              <span className="settlement-label">
+                PAYS
+              </span>
+
+              <strong>
+                {settlement.from}
+              </strong>
+            </div>
+
+            <span className="settlement-arrow">
+              →
+            </span>
+
+            <div className="settlement-person">
+              <span className="settlement-label">
+                RECEIVES
+              </span>
+
+              <strong>
+                {settlement.to}
+              </strong>
+            </div>
+
+            <strong className="settlement-amount">
+              ₹
+              {settlement.amount.toLocaleString(
+                "en-IN",
+                {
+                  maximumFractionDigits: 2,
+                }
+              )}
+            </strong>
+
+          </div>
+        )
+      )}
+
+    </div>
+
+  </div>
+)}
+
+            </>
+          )}
+
+        </section>
 
       </div>
 
