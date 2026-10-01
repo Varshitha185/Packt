@@ -1,0 +1,20 @@
+:root {
+  --sky: #7CC1E7;
+  --sun: #F2D17E;
+  --olive: #ACAD79;
+  --forest: #43593B;
+  --brown: #58402E;
+  --cream: #F8F5EC;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--cream);
+  color: var(--brown);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}

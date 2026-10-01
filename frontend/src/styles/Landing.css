@@ -1,0 +1,440 @@
+/* =====================================
+   LANDING PAGE
+===================================== */
+
+.site{
+  background:var(--paper);
+}
+
+/* ---------- HEADER ---------- */
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:20;
+
+  background:rgba(250,244,232,.94);
+  backdrop-filter:blur(10px);
+
+  border-bottom:1px solid rgba(48,39,31,.06);
+}
+
+.header-inner{
+  width:min(1200px,92%);
+  height:64px;
+
+  margin:auto;
+
+  display:flex;
+  align-items:center;
+}
+
+.brand-logo{
+  width:110px;
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  gap:24px;
+}
+
+.nav-left{
+  margin-left:26px;
+}
+
+.nav-right{
+  margin-left:auto;
+}
+
+.nav a{
+  text-decoration:none;
+  color:var(--ink);
+  font-size:13px;
+  transition:.2s;
+}
+
+.nav a:hover{
+  opacity:.65;
+}
+
+.login-btn{
+  height:36px;
+  padding:0 18px;
+
+  border-radius:999px;
+  border:1px solid var(--ink);
+
+  background:transparent;
+
+  font-size:13px;
+
+  cursor:pointer;
+}
+
+.login-btn:last-child{
+  background:var(--green);
+  color:white;
+  border:none;
+}
+
+.mobile-menu{
+  display:none;
+}
+
+/* ---------- HERO ---------- */
+
+.hero{
+  position:relative;
+  height:440px;
+  overflow:hidden;
+}
+
+.hero-image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.hero-dark{
+  position:absolute;
+  inset:0;
+
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.08),
+    rgba(0,0,0,.32)
+  );
+}
+
+.hero-content{
+  position:absolute;
+  inset:0;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+
+  text-align:center;
+}
+
+.hero-kicker{
+  color:var(--gold);
+
+  font-family:"Cormorant Garamond",serif;
+  font-style:italic;
+
+  font-size:20px;
+
+  margin-bottom:8px;
+}
+
+.hero h1{
+  color:white;
+
+  font-size:56px;
+  line-height:.88;
+  font-weight:500;
+}
+
+.hero h1 em{
+  color:var(--gold);
+}
+
+.hero-button{
+  margin-top:24px;
+
+  height:40px;
+  padding:0 24px;
+
+  border-radius:999px;
+
+  border:1px solid var(--gold);
+
+  background:rgba(255,255,255,.06);
+  color:white;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  cursor:pointer;
+
+  transition:.25s;
+}
+
+.hero-button:hover{
+  background:rgba(255,255,255,.14);
+}
+
+/* ---------- MOMENTS ---------- */
+
+.moments{
+  width:min(1200px,92%);
+  margin:auto;
+
+  padding:38px 0 56px;
+}
+
+.moments-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:20px;
+}
+
+.moments-top h2{
+  font-size:30px;
+  font-style:italic;
+}
+
+.arrows{
+  display:flex;
+  gap:10px;
+}
+
+.arrows button{
+  width:34px;
+  height:34px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(48,39,31,.18);
+
+  background:white;
+
+  cursor:pointer;
+}
+
+/* ---------- CARDS ---------- */
+
+.memory-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.memory-card{
+  background:var(--paper-light);
+
+  border-radius:18px;
+
+  overflow:hidden;
+
+  box-shadow:var(--shadow);
+
+  transition:.25s;
+}
+
+.memory-card:hover{
+  transform:translateY(-4px);
+}
+
+.memory-card.green{
+  border-top:5px solid var(--green);
+}
+
+.memory-card.orange{
+  border-top:5px solid var(--orange);
+}
+
+.memory-card.yellow{
+  border-top:5px solid var(--gold);
+}
+
+.memory-card img{
+  width:100%;
+  height:165px;
+  object-fit:cover;
+}
+
+.card-text{
+  padding:16px;
+}
+
+.card-text h3{
+  font-size:22px;
+  font-style:italic;
+  margin-bottom:6px;
+}
+
+.card-text p{
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* ---------- PRODUCT ---------- */
+
+.editorial{
+  width:min(1200px,92%);
+  margin:auto;
+
+  padding:30px 0 80px;
+}
+
+.editorial-left{
+  max-width:620px;
+}
+
+.editorial-kicker{
+  color:var(--orange);
+  letter-spacing:.18em;
+  font-size:11px;
+}
+
+.editorial-left h2{
+  font-size:46px;
+  line-height:.92;
+
+  margin:14px 0;
+}
+
+.editorial-left>p{
+  color:var(--muted);
+  line-height:1.7;
+  margin-bottom:30px;
+}
+
+.feature-list{
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.feature-item{
+  display:flex;
+  gap:16px;
+}
+
+.feature-item span{
+  color:var(--gold);
+  font-size:22px;
+  font-family:"Cormorant Garamond",serif;
+}
+
+.feature-item strong{
+  display:block;
+  font-family:"Cormorant Garamond",serif;
+  font-size:22px;
+  margin-bottom:4px;
+}
+
+.feature-item p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* =====================================
+   TABLET
+===================================== */
+
+@media(max-width:1024px){
+
+.hero{
+height:400px;
+}
+
+.hero h1{
+font-size:48px;
+}
+
+.memory-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media(max-width:768px){
+
+.header-inner{
+height:62px;
+}
+
+.nav{
+display:none;
+}
+
+.mobile-menu{
+display:block;
+margin-left:auto;
+background:none;
+border:none;
+font-size:24px;
+}
+
+.brand-logo{
+width:96px;
+}
+
+.hero{
+height:520px;
+}
+
+.hero h1{
+font-size:42px;
+}
+
+.hero-kicker{
+font-size:18px;
+}
+
+.hero-button{
+width:190px;
+justify-content:center;
+}
+
+.moments{
+padding:28px 0 40px;
+}
+
+.moments-top h2{
+font-size:26px;
+}
+
+.memory-grid{
+grid-template-columns:1fr;
+}
+
+.memory-card img{
+height:180px;
+}
+
+.editorial{
+padding:20px 0 60px;
+}
+
+.editorial-left h2{
+font-size:34px;
+}
+
+.feature-item strong{
+font-size:20px;
+}
+
+}
+
+/* =====================================
+   SMALL PHONES
+===================================== */
+
+@media(max-width:420px){
+
+.hero{
+height:480px;
+}
+
+.hero h1{
+font-size:36px;
+}
+
+.hero-kicker{
+font-size:16px;
+}
+
+}

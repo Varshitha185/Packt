@@ -1,0 +1,86 @@
+.planner-kicker{
+  display:block;
+  color:var(--orange);
+  font-size:11px;
+  letter-spacing:.22em;
+  margin-bottom:10px;
+}
+
+.planner-subtext{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:18px;
+}
+
+.planner-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.trip-modal textarea{
+  min-height:72px;
+}
+
+.ai-result button{
+  width:100%;
+  margin-top:16px;
+}
+
+.destination-chips{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:-2px 0 10px;
+}
+
+.destination-chips button{
+  height:30px;
+  padding:0 12px;
+
+  border:none;
+  border-radius:999px;
+
+  background:#efe6d3;
+  color:var(--ink);
+
+  font-size:12px;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.destination-chips button:hover{
+  background:var(--gold);
+}
+
+/* ---------- CREATE TRIP ---------- */
+
+.create-trip-modal{
+  width:420px;
+  max-width:90vw;
+}
+
+.planner-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.trip-modal input[type="date"]{
+  color:var(--ink);
+}
+
+@media(max-width:768px){
+
+  .create-trip-modal{
+    width:100%;
+    max-width:380px;
+  }
+
+  .planner-row{
+    grid-template-columns:1fr;
+  }
+
+}
